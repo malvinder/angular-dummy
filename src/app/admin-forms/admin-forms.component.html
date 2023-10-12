@@ -1,0 +1,45 @@
+<div class="w-100 pa1">
+	<div class="flex align-center">
+		<mat-form-field class="mr1">
+			<div class="input-container">
+				<mat-label>Name</mat-label>
+				<input matInput type="text" [(ngModel)]="name">
+			</div>
+		</mat-form-field>
+		<mat-form-field>
+			<div class="input-container">
+				<mat-label>Email</mat-label>
+				<input matInput type="email" [(ngModel)]="email">
+			</div>
+		</mat-form-field>
+	</div>
+
+	<div>
+			<button mat-raised-button color="primary" (click)="addData()">Add</button>
+	</div>
+
+	<table mat-table matSort [dataSource]="dataSource">
+		<ng-container matColumnDef="id">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+			<td mat-cell *matCellDef="let element">{{ element.id }}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="name">
+			<th mat-header-cell *matHeaderCellDef>Name</th>
+			<td mat-cell *matCellDef="let element">{{ element.name }}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="email">
+			<th mat-header-cell *matHeaderCellDef>Email</th>
+			<td mat-cell *matCellDef="let element">{{ element.email }}</td>
+		</ng-container>
+
+		<ng-container matColumnDef="pic">
+			<th mat-header-cell *matHeaderCellDef>Pic</th>
+			<td mat-cell *matCellDef="let element">{{ element.pic }}</td>
+		</ng-container>
+
+		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+		<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+	</table>
+</div>
