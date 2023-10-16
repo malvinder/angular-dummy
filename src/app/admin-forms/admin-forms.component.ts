@@ -9,8 +9,10 @@ import { HttpClient } from '@angular/common/http';
 export class AdminFormsComponent {
   name = '';
   email = '';
+  isEdit = false;
+  selectedId = null;
 
-  displayedColumns: string[] = ['id', 'name', 'email'];
+  displayedColumns: string[] = ['id', 'name', 'email', 'actions'];
   public dataSource: any = [];
 
   constructor(private http: HttpClient) {}
@@ -21,13 +23,56 @@ export class AdminFormsComponent {
       return;
     }
 
+    if (this.isEdit) {
+      this.http
+        .put('http://localhost:3500/users', {
+          id: this.selectedId,
+          name: this.name,
+          email: this.email,
+        })
+        ?.subscribe((data: any) => {
+          this.isEdit = false;
+          this.name = '';
+          this.email = '';
+          this.selectedId = null;
+          if (data?.status === 'success') {
+            this.dataSource = [...data.data];
+          }
+        });
+    } else {
+      this.http
+        .post('http://localhost:3500/users', {
+          id: this.dataSource?.length + 1,
+          name: this.name,
+          email: this.email,
+        })
+        ?.subscribe((data: any) => {
+          this.isEdit = false;
+          this.name = '';
+          this.email = '';
+          this.selectedId = null;
+          if (data?.status === 'success') {
+            this.dataSource = [...data.data];
+          }
+        });
+    }
+  }
+
+  setEditData(elem: any) {
+    this.isEdit = true;
+    this.name = elem?.name;
+    this.email = elem?.email;
+    this.selectedId = elem?.id;
+  }
+
+  onDelete(userId: string) {
     this.http
-      .post('http://localhost:3500/users', {
-        id: this.dataSource?.length + 1,
-        name: this.name,
-        email: this.email,
-      })
+      .delete(`http://localhost:3500/users/${userId}`)
       ?.subscribe((data: any) => {
+        this.isEdit = false;
+        this.name = '';
+        this.email = '';
+        this.selectedId = null;
         if (data?.status === 'success') {
           this.dataSource = [...data.data];
         }

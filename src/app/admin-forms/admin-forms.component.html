@@ -15,7 +15,9 @@
 	</div>
 
 	<div>
-			<button mat-raised-button color="primary" (click)="addData()">Add</button>
+		<button mat-raised-button color="primary" (click)="addData()">
+			{{ isEdit ? 'Update' : 'Add' }}
+		</button>
 	</div>
 
 	<table mat-table matSort [dataSource]="dataSource">
@@ -34,9 +36,22 @@
 			<td mat-cell *matCellDef="let element">{{ element.email }}</td>
 		</ng-container>
 
-		<ng-container matColumnDef="pic">
+		<!-- <ng-container matColumnDef="pic">
 			<th mat-header-cell *matHeaderCellDef>Pic</th>
 			<td mat-cell *matCellDef="let element">{{ element.pic }}</td>
+		</ng-container> -->
+
+		<ng-container matColumnDef="actions">
+			<th mat-header-cell *matHeaderCellDef>Actions</th>
+			<td mat-cell *matCellDef="let element">
+				<button mat-icon-button (click)="setEditData(element)">
+					<mat-icon fontIcon="edit"></mat-icon>
+				</button>
+
+				<button mat-icon-button (click)="onDelete(element?.id)">
+					<mat-icon fontIcon="delete"></mat-icon>
+				</button>
+			</td>
 		</ng-container>
 
 		<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
