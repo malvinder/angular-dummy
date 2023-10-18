@@ -1,5 +1,13 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpEvent,
+  HttpRequest,
+  HttpResponse,
+} from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { FormDialogComponent } from '../form-dialog/form-dialog.component';
 
 @Component({
   selector: 'app-admin-forms',
@@ -11,11 +19,67 @@ export class AdminFormsComponent {
   email = '';
   isEdit = false;
   selectedId = null;
+  filePath = '';
+  selectedFile = null;
 
   displayedColumns: string[] = ['id', 'name', 'email', 'actions'];
   public dataSource: any = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public dialog: MatDialog) {}
+
+  openDialog() {
+    const dialogRef = this.dialog.open(FormDialogComponent);
+  }
+
+  openFileDialog() {
+    const fileDialog = document.getElementById('profile-pic');
+    if (fileDialog) {
+      fileDialog.click();
+    }
+  }
+
+  upload(): void {
+    if (!this.selectedFile) {
+      return;
+    }
+
+    this.uploadFile(this.selectedFile)?.subscribe({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          console.log('RESPONSE BODY: ', event?.body);
+          this.selectedFile = null;
+        }
+      },
+      error: (err: any) => {
+        console.log('ERROR: ', err?.error);
+        this.selectedFile = null;
+      },
+    });
+  }
+
+  uploadFile(file: File): Observable<HttpEvent<any>> {
+    const formData: FormData = new FormData();
+
+    formData.append('attachment', file);
+    const req = new HttpRequest(
+      'POST',
+      'http://localhost:3500/upload',
+      formData,
+      {
+        reportProgress: true,
+        responseType: 'json',
+      }
+    );
+
+    return this.http.request(req);
+  }
+
+  selectFile(event: any): void {
+    const f = event?.target?.files?.[0];
+    if (f) {
+      this.selectedFile = f;
+    }
+  }
 
   addData() {
     if (!this.name && !this.email) {
