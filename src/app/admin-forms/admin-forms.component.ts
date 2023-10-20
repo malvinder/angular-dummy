@@ -8,6 +8,8 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { FormDialogComponent } from '../form-dialog/form-dialog.component';
+import { TableDataService } from '../table-data.service';
+import { UseridServiceService } from '../userid-service.service';
 
 @Component({
   selector: 'app-admin-forms',
@@ -25,7 +27,12 @@ export class AdminFormsComponent {
   displayedColumns: string[] = ['profilePic', 'id', 'name', 'email', 'actions'];
   public dataSource: any = [];
 
-  constructor(private http: HttpClient, public dialog: MatDialog) {}
+  constructor(
+    private http: HttpClient,
+    public dialog: MatDialog,
+    private tableService: TableDataService,
+    private userIdService: UseridServiceService
+  ) {}
 
   openDialog() {
     const dialogRef = this.dialog.open(FormDialogComponent);
@@ -147,11 +154,15 @@ export class AdminFormsComponent {
     this.http.get('http://localhost:3500/users')?.subscribe((data: any) => {
       if (data?.status === 'success') {
         this.dataSource = [...data.data];
+        this.userIdService.setUserId(this.dataSource.length + 1);
       }
     });
   }
 
   ngOnInit() {
     this.fetchData();
+    this.tableService.currentDataSource.subscribe(
+      (dSrc) => (this.dataSource = dSrc)
+    );
   }
 }

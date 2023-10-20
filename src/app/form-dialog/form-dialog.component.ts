@@ -6,6 +6,8 @@ import {
 } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
+import { TableDataService } from '../table-data.service';
+import { UseridServiceService } from '../userid-service.service';
 
 @Component({
   selector: 'app-form-dialog',
@@ -20,10 +22,28 @@ export class FormDialogComponent {
   selectedFile = null;
   filePath = '';
   profilePic = null;
+  userId: number = 5;
 
   public dataSource: any = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private tableService: TableDataService,
+    private userIdService: UseridServiceService
+  ) {}
+
+  ngOnInit() {
+    this.userIdService.currentDataSource.subscribe((id) => (this.userId = id));
+  }
+
+  fetchData() {
+    this.http.get('http://localhost:3500/users')?.subscribe((data: any) => {
+      if (data?.status === 'success') {
+        this.dataSource = [...data.data];
+        this.tableService.setDataSource(this.dataSource);
+      }
+    });
+  }
 
   openFileDialog() {
     const fileDialog = document.getElementById('profile-pic');
@@ -104,12 +124,13 @@ export class FormDialogComponent {
           this.selectedId = null;
           if (data?.status === 'success') {
             this.dataSource = [...data.data];
+            this.fetchData();
           }
         });
     } else {
       this.http
         .post('http://localhost:3500/users', {
-          id: this.dataSource?.length + 1,
+          id: this.dataSource.length + 1,
           name: this.name,
           email: this.email,
           profilePic: this.profilePic,
@@ -122,6 +143,7 @@ export class FormDialogComponent {
           this.selectedId = null;
           if (data?.status === 'success') {
             this.dataSource = [...data.data];
+            this.fetchData();
           }
         });
     }

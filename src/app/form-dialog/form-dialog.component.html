@@ -29,7 +29,7 @@
 	</div>
 
 	<div mat-dialog-actions class="flex justify-between">
-		<button mat-raised-button color="primary" (click)="addData()">
+		<button mat-raised-button mat-dialog-close color="primary" (click)="addData()">
 			{{ isEdit ? 'Update' : 'Add' }}
 		</button>
 		<button mat-raised-button mat-dialog-close style="margin-right: 40px;">Close</button>
