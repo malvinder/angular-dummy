@@ -22,7 +22,7 @@ export class AdminFormsComponent {
   filePath = '';
   selectedFile = null;
 
-  displayedColumns: string[] = ['id', 'name', 'email', 'actions'];
+  displayedColumns: string[] = ['profilePic', 'id', 'name', 'email', 'actions'];
   public dataSource: any = [];
 
   constructor(private http: HttpClient, public dialog: MatDialog) {}

@@ -16,7 +16,7 @@
 
 	<div class="flex align-center">
 		<div class="input-container">
-			<img src="../../assets/user.png" width="100" height="100" (click)="openFileDialog()" />
+			<img src="{{profilePic ?? '../../assets/user.png'}}" width="100" height="100" (click)="openFileDialog()" />
 			<mat-label></mat-label><br />
 			<input type="file" id="profile-pic" (change)="selectFile($event)" style="visibility: hidden;">
 		</div>

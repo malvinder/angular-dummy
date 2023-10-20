@@ -19,6 +19,7 @@ export class FormDialogComponent {
   selectedId = null;
   selectedFile = null;
   filePath = '';
+  profilePic = null;
 
   public dataSource: any = [];
 
@@ -39,7 +40,7 @@ export class FormDialogComponent {
     this.uploadFile(this.selectedFile)?.subscribe({
       next: (event: any) => {
         if (event instanceof HttpResponse) {
-          console.log('RESPONSE BODY: ', event?.body);
+          this.profilePic = event?.body?.path;
           this.selectedFile = null;
         }
       },
@@ -93,11 +94,13 @@ export class FormDialogComponent {
           id: this.selectedId,
           name: this.name,
           email: this.email,
+          profilePic: this.profilePic,
         })
         ?.subscribe((data: any) => {
           this.isEdit = false;
           this.name = '';
           this.email = '';
+          this.profilePic = null;
           this.selectedId = null;
           if (data?.status === 'success') {
             this.dataSource = [...data.data];
@@ -109,11 +112,13 @@ export class FormDialogComponent {
           id: this.dataSource?.length + 1,
           name: this.name,
           email: this.email,
+          profilePic: this.profilePic,
         })
         ?.subscribe((data: any) => {
           this.isEdit = false;
           this.name = '';
           this.email = '';
+          this.profilePic = null;
           this.selectedId = null;
           if (data?.status === 'success') {
             this.dataSource = [...data.data];
